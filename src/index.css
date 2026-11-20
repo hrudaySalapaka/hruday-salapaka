@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+.profile-avatar { width: 34px; height: 34px; flex: 0 0 34px; display: grid; place-items: center; overflow: hidden; border-radius: 50%; background: #dff0e4; color: #0e6640; font-size: 14px; font-weight: 750; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #172b22;
+  background: #f4f6ef;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --green-950: #102b20;
+  --green-900: #163d2c;
+  --green-800: #1f5c3d;
+  --green-700: #28764b;
+  --green-600: #3d945c;
+  --green-100: #e7f1e5;
+  --cream: #f4f6ef;
+  --gold: #c49a57;
+  --ink: #172b22;
+  --muted: #68796d;
+  --line: #e1e8dd;
+  --white: #fff;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
+body { min-height: 100vh; background: var(--cream); }
+button, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+button:disabled { cursor: not-allowed; opacity: .6; }
+::selection { color: #fff; background: #28764b; }
+:focus-visible { outline: 3px solid #8dbb70; outline-offset: 3px; }
