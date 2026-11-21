@@ -68,6 +68,8 @@ declare module 'lucide-react' {
   export const Truck: LucideIcon
   export const Trash2: LucideIcon
   export const Video: LucideIcon
+  export const Volume2: LucideIcon
+  export const VolumeX: LucideIcon
   export const Upload: LucideIcon
   export const UserRound: LucideIcon
   export const Wallet: LucideIcon

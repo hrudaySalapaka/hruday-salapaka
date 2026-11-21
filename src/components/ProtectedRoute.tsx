@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ isLoading, userId, profile, allowedRoles, stage = 'complete', context }: ProtectedRouteProps) {
   if (isLoading) return <div className="full-screen-state" role="status"><span className="spinner" />Loading your account…</div>
-  if (!userId) return <Navigate to="/login" replace />
+  if (!userId) return <Navigate to="/auth" replace />
   if (profile?.role === 'Admin' && stage !== 'complete') return <Navigate to="/home" replace />
   if (stage === 'role') {
     if (profile?.profile_complete) return <Navigate to="/home" replace />

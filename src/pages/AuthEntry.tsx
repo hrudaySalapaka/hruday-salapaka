@@ -6,8 +6,7 @@ export default function AuthEntry() {
   return (
     <main className="auth-page">
       <Link to="/" className="auth-brand">
-        <span className="brand-mark"><Sprout size={25} /></span>
-        <span><strong>KHETIGO</strong><small>Smart Farm Connect</small></span>
+        <img className="brand-emblem" src="/WhatsApp%20Image%202026-11-21%20at%206.52.38%20PM.jpeg" alt="KHETIGO" />
       </Link>
       <section className="auth-card">
         <div className="auth-heading">

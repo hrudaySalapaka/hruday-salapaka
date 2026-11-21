@@ -37,3 +37,94 @@
 .rental-order-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:12px 0;padding:0;list-style:none}.rental-order-progress li{position:relative;padding:9px 5px;border:1px solid #e3ebe2;border-radius:9px;color:#819084;text-align:center;font-size:9px}.rental-order-progress li.active{border-color:#6ba77a;background:#f0f8ec;color:#176b43;font-weight:750}@media(max-width:600px){.rental-order-progress{grid-template-columns:1fr}.rental-order-progress li{text-align:left;padding:9px 11px}}
 
 .rental-order-actions>a{color:#496e51;text-decoration:none;font-size:10px;font-weight:700}
+
+/* Proportional rental discovery and booking layout across viewport sizes. */
+.rental-content{width:min(100%,1280px);margin-inline:auto;padding-inline:clamp(0px,2.5vw,28px);box-sizing:border-box}
+.rental-promo{min-height:clamp(210px,24vw,290px);padding:clamp(18px,3.5vw,42px) clamp(18px,4.5vw,58px)}
+.rental-promo-copy{width:min(64%,560px);min-width:0}
+.rental-promo-copy h1{font-size:clamp(25px,3.4vw,42px);overflow-wrap:anywhere}
+.rental-promo-copy p{font-size:clamp(11px,1.1vw,13px)}
+.rental-promo-art{width:clamp(118px,16vw,190px);height:auto;aspect-ratio:1}
+.rental-benefits{flex-wrap:wrap;justify-content:space-between}
+.rental-benefits span{min-width:0;line-height:1.4}
+.rental-section-heading,.rental-list-heading,.rental-page-header{min-width:0;flex-wrap:wrap}
+.rental-category-pills{max-width:100%;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+.rental-grid{display:grid;width:100%;min-width:0;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(12px,1.8vw,22px);grid-auto-rows:1fr;align-items:stretch}
+.rental-card{display:flex;min-width:0;height:100%;flex-direction:column}
+.rental-card-cover{flex:none}
+.rental-card-info{display:flex;min-width:0;flex:1;flex-direction:column}
+.rental-card-info h2,.rental-card-spec,.rental-owner,.rental-card-location{overflow-wrap:anywhere}
+.rental-card-info h2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;line-height:1.3}
+.rental-card-cover{width:100%;aspect-ratio:16/10}
+.rental-card-cover>img{object-fit:cover;object-position:center}
+.rental-owner{flex-wrap:wrap;min-width:0}
+.rental-owner>span:nth-child(2){min-width:0;max-width:calc(100% - 80px)}
+.rental-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:auto;padding-top:12px}
+.rental-card-actions button{min-width:0;white-space:normal;line-height:1.2}
+.rental-detail-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.rental-detail-actions button{min-width:0;white-space:normal}
+.rental-detail-layout,.rental-cart-layout,.rental-checkout-layout,.rental-payment-layout{min-width:0}
+.rental-detail-summary,.rental-cart-summary,.rental-checkout-summary{min-width:0}
+.rental-spec-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+@media(max-width:900px){
+  .rental-promo{min-height:220px}
+  .rental-promo-copy{width:70%}
+  .rental-detail-layout{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rental-cart-layout,.rental-checkout-layout{grid-template-columns:minmax(0,1fr) minmax(230px,.72fr)}
+}
+@media(max-width:700px){
+  .rental-content{padding-inline:clamp(12px,3vw,20px)}
+  .rental-promo{min-height:clamp(205px,50vw,250px);padding:clamp(16px,4vw,24px)}
+  .rental-promo-copy{width:min(78%,480px)}
+  .rental-promo-copy h1{font-size:clamp(23px,6vw,31px)}
+  .rental-promo-copy p{max-width:36ch;font-size:clamp(10px,2.7vw,12px)}
+  .rental-promo-art{right:-5%;width:clamp(112px,31vw,155px);opacity:.48}
+  .rental-benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px;padding:12px}
+  .rental-benefits span{font-size:10px}
+  .rental-list-heading{display:grid;grid-template-columns:minmax(0,1fr);gap:11px}
+  .rental-inline-search,.rental-inline-search input{width:100%;max-width:none;min-width:0}
+  .rental-detail-layout,.rental-cart-layout,.rental-checkout-layout,.rental-payment-layout{grid-template-columns:minmax(0,1fr)}
+  .rental-detail-actions{position:static;grid-template-columns:repeat(2,minmax(0,1fr));}
+  .rental-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+}
+@media(max-width:480px){
+  .rental-content{padding-inline:12px}
+  .rental-promo{min-height:205px;padding:17px 15px 40px}
+  .rental-promo-copy{width:84%}
+  .rental-promo-copy>span{font-size:8px;letter-spacing:.1em;line-height:1.4}
+  .rental-promo-copy h1{max-width:24ch;margin-block:8px;font-size:clamp(21px,6.5vw,27px)}
+  .rental-promo-copy p{max-width:30ch;margin-bottom:12px;font-size:10px}
+  .rental-promo-art{right:-9%;width:118px;opacity:.28}
+  .rental-benefits{grid-template-columns:minmax(0,1fr);gap:9px}
+  .rental-section-heading h2,.rental-list-heading h2{font-size:clamp(17px,5vw,20px)}
+  .rental-category-pills{gap:7px;padding-block:9px}
+  .rental-category-pills button{min-height:36px;padding-inline:12px;font-size:10px}
+  .rental-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+  .rental-card{display:flex;flex-direction:column}
+  .rental-card-cover{height:auto;min-height:0;aspect-ratio:16/9}
+  .rental-card-info{padding:clamp(11px,4vw,15px)}
+  .rental-card-info h2{font-size:clamp(14px,4.5vw,17px);white-space:normal}
+  .rental-card-spec{min-height:0;line-height:1.45}
+  .rental-owner{gap:6px;font-size:9px}
+  .rental-owner>span:nth-child(2){max-width:none;flex:1 1 150px}
+  .rental-rating{margin-left:auto}
+  .rental-price-pair{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .rental-price-pair>div{grid-template-columns:minmax(0,1fr);gap:4px}
+  .rental-price-pair>div>span{grid-column:auto}
+  .rental-price-pair strong{font-size:clamp(12px,4vw,15px);overflow-wrap:anywhere}
+  .rental-card-location{white-space:normal;line-height:1.4}
+  .rental-card-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .rental-card-actions button{min-height:40px;padding-inline:7px;font-size:clamp(9px,2.8vw,11px)}
+  .rental-detail-actions{grid-template-columns:minmax(0,1fr)}
+  .rental-detail-prices{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px}
+  .rental-order-progress{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:350px){
+  .rental-card-actions{grid-template-columns:minmax(0,1fr)}
+  .rental-price-pair{grid-template-columns:minmax(0,1fr)}
+}
+.rental-request-farmer{display:flex;align-items:center;gap:12px;margin-top:16px;padding:13px 0;border-top:1px solid #edf1ed;border-bottom:1px solid #edf1ed}.rental-request-avatar{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;overflow:hidden;border-radius:50%;background:#e5f1e7;color:#176b43;font-size:17px;font-weight:800}.rental-request-avatar img{width:100%;height:100%;object-fit:cover}.rental-request-farmer>div{display:grid;gap:3px}.rental-request-farmer>div span{font-size:11px;color:#738075}.rental-request-farmer>div b{font-size:14px;color:#23362a}.rental-request-farmer>div a{font-size:12px;color:#176b43;text-decoration:none}
+.rental-id-photo{display:grid;padding:0;border:0;background:none;border-radius:50%;cursor:pointer}.rental-id-photo:focus-visible{outline:3px solid #70a985;outline-offset:3px}.rental-request-farmer>div small{color:#768378;font-size:10px}.rental-payment-toggle{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border-radius:10px;background:#f4f8f3}.rental-payment-toggle>span{margin-right:auto;color:#516358;font-size:12px;font-weight:750}.rental-payment-toggle button{border:1px solid #ccd9cd;border-radius:999px;padding:6px 13px;background:#fff;color:#637166;font:inherit;font-size:11px;font-weight:750;cursor:pointer}.rental-payment-toggle button.selected{border-color:#1b784c;background:#1b784c;color:#fff}.rental-payment-toggle button.selected.not-paid{border-color:#a64035;background:#a64035}.rental-payment-toggle button:disabled{opacity:.55;cursor:not-allowed}.rental-payment-toggle small{flex-basis:100%;color:#758278;font-size:10px}.rental-delivery-panel{display:grid;gap:12px;margin-top:14px;padding:14px;border:1px solid #dfe9df;border-radius:12px;background:#fbfdf9}.rental-delivery-panel>label{display:grid;grid-template-columns:minmax(130px,.4fr) minmax(0,1fr);align-items:center;gap:12px;color:#2b4633;font-size:13px}.rental-delivery-panel select{min-width:0;padding:9px 11px;border:1px solid #d2ded3;border-radius:8px;background:#fff;font:inherit}.rental-delivery-details{display:grid;gap:6px;padding-top:11px;border-top:1px solid #e8efe8}.rental-delivery-details>b{color:#1c623d;font-size:13px}.rental-delivery-details p{margin:0;color:#637166;font-size:12px;line-height:1.5;overflow-wrap:anywhere}.rental-delivery-details a{display:inline-flex;align-items:center;gap:6px;width:max-content;max-width:100%;color:#176b43;font-size:12px;font-weight:750;text-decoration:none;overflow-wrap:anywhere}.rental-id-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px;background:#10271dcc}.rental-digital-id{position:relative;width:min(100%,380px);padding:27px;border:1px solid #d9e7da;border-radius:20px;background:linear-gradient(155deg,#fff 0%,#f5faf3 100%);box-shadow:0 24px 75px #0d221d55;text-align:center}.rental-id-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:#edf4ed;color:#335741;font-size:24px;cursor:pointer}.rental-id-brand{display:grid;gap:3px;color:#126b43;font-size:15px;font-weight:900;letter-spacing:.08em}.rental-id-brand span{color:#748179;font-size:9px;letter-spacing:.16em}.rental-id-avatar{display:grid;place-items:center;width:94px;height:94px;margin:20px auto 12px;overflow:hidden;border:4px solid #dcecdf;border-radius:50%;background:#e7f1e8;color:#176b43;font-size:32px;font-weight:800}.rental-id-avatar img{width:100%;height:100%;object-fit:cover}.rental-digital-id h2{margin:5px 0;color:#23372a;font-size:22px}.rental-id-role{display:inline-flex;padding:6px 11px;border-radius:999px;background:#e7f3e8;color:#176b43;font-size:11px}.rental-digital-id dl{display:grid;gap:10px;margin:20px 0 12px;text-align:left}.rental-digital-id dl div{display:grid;gap:3px;padding-bottom:8px;border-bottom:1px solid #e3ebe3}.rental-digital-id dt{color:#79867b;font-size:10px}.rental-digital-id dd{margin:0;color:#334639;font-size:12px;font-weight:650;overflow-wrap:anywhere}.rental-digital-id>small{color:#849086;font-size:9px}.rental-out-of-stock-badge{position:absolute;z-index:1;top:10px;left:10px;padding:6px 10px;border-radius:999px;background:#a43c32;color:#fff;font-size:10px;font-weight:800}.rental-card-actions button:disabled{opacity:.58;cursor:not-allowed}
+@media(max-width:520px){.rental-delivery-panel>label{grid-template-columns:minmax(0,1fr)}.rental-payment-toggle>span{flex-basis:100%}.rental-digital-id{padding:24px 19px}}
+.rental-digital-id{max-height:90vh;overflow-y:auto}
+.rental-tracking-card li{flex-wrap:wrap;min-width:0}.rental-tracking-card li a{max-width:100%;overflow-wrap:anywhere}

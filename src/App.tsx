@@ -88,9 +88,26 @@ function PlainPage({ title, children, className }: { title: string; children: Re
   return <section className={`plain-page${className ? ` ${className}` : ''}`}><h1>{title}</h1>{children}</section>
 }
 
+function authenticatedDestination(profile: UserProfile | null): string {
+  if (!profile?.role) return '/select-role'
+  if (profile.role === 'Admin' || profile.profile_complete) return '/home'
+  return '/profile-setup'
+}
+
+function AuthPageRoute({ isLoading, userId, profile, children }: {
+  isLoading: boolean
+  userId: string | null
+  profile: UserProfile | null
+  children: ReactNode
+}) {
+  if (isLoading) return <div className="full-screen-state" role="status"><span className="spinner" />Loading your accountâ€¦</div>
+  if (userId) return <Navigate to={authenticatedDestination(profile)} replace />
+  return children
+}
+
 function SearchPage() {
   const params = new URLSearchParams(window.location.search)
-  return <PlainPage title="Search KHETIGO"><p>Search for ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“{params.get('q') || ''}ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â. Product and equipment listings appear here when they are available in your account region.</p><Link className="button button-primary" to="/shop">Browse products</Link></PlainPage>
+  return <PlainPage title="Search KHETIGO"><p>Search for ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ{params.get('q') || ''}ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â. Product and equipment listings appear here when they are available in your account region.</p><Link className="button button-primary" to="/shop">Browse products</Link></PlainPage>
 }
 
 function AuxiliaryRoutes() {
@@ -119,7 +136,7 @@ function NotificationsPage() {
     if (updateError) setError(updateError.message)
     else setRows((current) => current.map((item) => item.id === id ? { ...item, read_at: readAt } : item))
   }
-  return <PlainPage title="Notifications">{error && <div className="notice notice-error" role="alert">{error}</div>}{loading ? <div className="workspace-state"><span className="spinner" /> Loading notificationsÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦</div> : rows.length ? <div className="notification-list">{rows.map((item) => <article key={item.id} className={`notification-card${item.read_at ? '' : ' unread'}`}><span className="notification-dot" /><div><strong>{item.title}</strong><p>{item.body}</p><small>{new Date(item.created_at).toLocaleString()}</small></div>{!item.read_at && <button className="button button-outline button-small" onClick={() => void markRead(item.id)}>Mark read</button>}</article>)}</div> : <div className="empty-state"><p>You donÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢t have notifications yet.</p></div>}</PlainPage>
+  return <PlainPage title="Notifications">{error && <div className="notice notice-error" role="alert">{error}</div>}{loading ? <div className="workspace-state"><span className="spinner" /> Loading notificationsÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦</div> : rows.length ? <div className="notification-list">{rows.map((item) => <article key={item.id} className={`notification-card${item.read_at ? '' : ' unread'}`}><span className="notification-dot" /><div><strong>{item.title}</strong><p>{item.body}</p><small>{new Date(item.created_at).toLocaleString()}</small></div>{!item.read_at && <button className="button button-outline button-small" onClick={() => void markRead(item.id)}>Mark read</button>}</article>)}</div> : <div className="empty-state"><p>You donÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢t have notifications yet.</p></div>}</PlainPage>
 }
 
 function AppRoutes() {
@@ -145,6 +162,8 @@ function AppRoutes() {
     const requestId = ++profileRequest.current
     setUserId(id)
     if (!id) { setProfile(null); setLoading(false); return }
+    setProfile(null)
+    setAuthError('')
     setLoading(true)
     try {
       // This server function validates the JWT and email verification before
@@ -164,7 +183,7 @@ function AppRoutes() {
     let active = true
     if (!isSupabaseConfigured) return
     const unsubscribe = authService.onAuthStateChange((_event, session) => { if (active) void loadSession(session?.user.id ?? null) })
-    void authService.getSession().then((session) => { if (active) return loadSession(session?.user.id ?? null) }).catch((reason: unknown) => { if (active) setAuthError(reason instanceof Error ? reason.message : 'Could not read your session.') }).finally(() => { if (active) setLoading(false) })
+    void authService.getSession().then((session) => { if (active) return loadSession(session?.user.id ?? null) }).catch((reason: unknown) => { if (active) { setUserId(null); setProfile(null); setAuthError(reason instanceof Error ? reason.message : 'Could not read your session.') } }).finally(() => { if (active) setLoading(false) })
     return () => { active = false; unsubscribe() }
   }, [loadSession])
 
@@ -187,8 +206,10 @@ function AppRoutes() {
       await loadSession(session.user.id)
       const currentProfile = await profileService.getProfile(session.user.id)
       setProfile(currentProfile)
-      navigate(currentProfile?.role === 'Admin' || currentProfile?.profile_complete && currentProfile.role ? '/home' : currentProfile?.role ? '/profile-setup' : '/select-role', { replace: true })
+      navigate(authenticatedDestination(currentProfile), { replace: true })
     } catch (reason) {
+      setUserId(null)
+      setProfile(null)
       setAuthError(reason instanceof Error ? reason.message : 'Could not verify your session. Sign in to continue.')
       navigate('/auth')
     }
@@ -201,11 +222,11 @@ function AppRoutes() {
       profileRequest.current += 1
       setUserId(null)
       setProfile(null)
-      navigate('/login', { replace: true })
+      navigate('/auth', { replace: true })
     } catch (reason) { setAuthError(reason instanceof Error ? reason.message : 'Could not sign out.') }
   }
 
-  return <><Routes><Route path="/" element={<GuestStart onGetStarted={handleGetStarted} checkingSession={loading} />} /><Route path="/auth" element={<AuthEntry />} /><Route path="/login" element={<Login />} /><Route path="/forgot-password" element={<PasswordRecovery />} /><Route path="/create-account" element={<CreateAccount />} /><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} stage="role" context={context} />}><Route path="/select-role" element={<SelectRole />} /></Route><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} stage="profile" context={context} />}><Route path="/profile-setup" element={<ProfileSetup />} /></Route><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} context={context} />}><Route element={<AppLayout profile={profile} onSignOut={() => void signOut()} />}><Route path="/home" element={profile?.role === 'Admin' ? <Navigate to="/admin/rental-payments" replace /> : profile?.role === 'Farmer' ? <ExploreHome /> : profile?.role === 'Equipment Owner' ? <EquipmentOwnerDashboard path="/home" /> : <Home />} /><Route path="/farmer/*" element={<FarmerRoutes />} /><Route path="/profile" element={profile?.role === 'Farmer' ? <FarmerProfile /> : <ProfilePage profile={profile} />} /><Route path="/notifications" element={profile?.role === 'Farmer' ? <FarmerNotifications /> : <NotificationsPage />} /><Route path="/search" element={<SearchPage />} />{routeItems.filter((route) => !route.roles.includes('Farmer') && route.path !== '/equipment-owner/equipment').map((route) => { const Dashboard = dashboards[route.roles[0]]; return <Route key={route.path} element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={route.roles} context={context} />}><Route path={route.path} element={<Dashboard {...route} />} /></Route> })}<Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Equipment Owner']} context={context} />}><Route path="/equipment-owner/equipment/*" element={<EquipmentManagementRoutes />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Admin']} context={context} />}><Route path="/admin/rental-payments" element={<RentalPayments />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Customer']} context={context} />}><Route path="/shop" element={<CustomerDashboard path="/shop" title="Fresh from the farm" table="products" description="Browse products listed by KHETIGO sellers." />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Event Manager']} context={context} />}><Route path="/event-manager/events" element={<RoleFeaturePage role="Event Manager" title="Events" />} /><Route path="/event-manager/events/create" element={<RoleFeaturePage role="Event Manager" title="Create Event" />} /><Route path="/event-manager/bookings" element={<RoleFeaturePage role="Event Manager" title="Bookings" />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Food Seller']} context={context} />}><Route path="/food-seller/menu" element={<RoleFeaturePage role="Food Seller" title="Menu" />} /><Route path="/food-seller/menu/add" element={<RoleFeaturePage role="Food Seller" title="Add Food" />} /><Route path="/food-seller/orders" element={<RoleFeaturePage role="Food Seller" title="Orders" />} /></Route><Route path="*" element={<Navigate to="/home" replace />} /></Route></Route></Routes><AuxiliaryRoutes />{authError && <div className="global-error" role="alert">{authError}<button onClick={() => setAuthError('')} aria-label="Dismiss">×</button></div>}</>
+  return <><Routes><Route path="/" element={<GuestStart onGetStarted={handleGetStarted} checkingSession={loading} activeRole={profile?.role && profile.role !== 'Admin' ? profile.role : null} />} /><Route path="/auth" element={<AuthPageRoute isLoading={loading} userId={userId} profile={profile}><AuthEntry /></AuthPageRoute>} /><Route path="/login" element={<AuthPageRoute isLoading={loading} userId={userId} profile={profile}><Login /></AuthPageRoute>} /><Route path="/forgot-password" element={<AuthPageRoute isLoading={loading} userId={userId} profile={profile}><PasswordRecovery /></AuthPageRoute>} /><Route path="/create-account" element={<AuthPageRoute isLoading={loading} userId={userId} profile={profile}><CreateAccount /></AuthPageRoute>} /><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} stage="role" context={context} />}><Route path="/select-role" element={<SelectRole />} /></Route><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} stage="profile" context={context} />}><Route path="/profile-setup" element={<ProfileSetup />} /></Route><Route element={<ProtectedRoute isLoading={loading} userId={userId} profile={profile} context={context} />}><Route element={<AppLayout profile={profile} onSignOut={() => void signOut()} />}><Route path="/home" element={profile?.role === 'Admin' ? <Navigate to="/admin/rental-payments" replace /> : profile?.role === 'Farmer' ? <ExploreHome /> : profile?.role === 'Equipment Owner' ? <EquipmentOwnerDashboard path="/home" /> : <Home />} /><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={["Farmer"]} context={context} />}><Route path="/farmer/*" element={<FarmerRoutes />} /></Route><Route path="/profile" element={profile?.role === 'Farmer' ? <FarmerProfile /> : <ProfilePage profile={profile} />} /><Route path="/notifications" element={profile?.role === 'Farmer' ? <FarmerNotifications /> : <NotificationsPage />} /><Route path="/search" element={<SearchPage />} />{routeItems.filter((route) => !route.roles.includes('Farmer') && route.path !== '/equipment-owner/equipment').map((route) => { const Dashboard = dashboards[route.roles[0]]; return <Route key={route.path} element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={route.roles} context={context} />}><Route path={route.path} element={<Dashboard {...route} />} /></Route> })}<Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Equipment Owner']} context={context} />}><Route path="/equipment-owner/equipment/*" element={<EquipmentManagementRoutes />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Admin']} context={context} />}><Route path="/admin/rental-payments" element={<RentalPayments />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Customer']} context={context} />}><Route path="/shop" element={<CustomerDashboard path="/shop" title="Fresh from the farm" table="products" description="Browse products listed by KHETIGO sellers." />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Event Manager']} context={context} />}><Route path="/event-manager/events" element={<RoleFeaturePage role="Event Manager" title="Events" />} /><Route path="/event-manager/events/create" element={<RoleFeaturePage role="Event Manager" title="Create Event" />} /><Route path="/event-manager/bookings" element={<RoleFeaturePage role="Event Manager" title="Bookings" />} /></Route><Route element={<ProtectedRoute isLoading={false} userId={userId} profile={profile} allowedRoles={['Food Seller']} context={context} />}><Route path="/food-seller/menu" element={<RoleFeaturePage role="Food Seller" title="Menu" />} /><Route path="/food-seller/menu/add" element={<RoleFeaturePage role="Food Seller" title="Add Food" />} /><Route path="/food-seller/orders" element={<RoleFeaturePage role="Food Seller" title="Orders" />} /></Route><Route path="*" element={<Navigate to="/home" replace />} /></Route></Route></Routes><AuxiliaryRoutes />{authError && <div className="global-error" role="alert">{authError}<button onClick={() => setAuthError('')} aria-label="Dismiss">Ã—</button></div>}</>
 }
 
 function ProfilePage({ profile }: { profile: UserProfile | null }) {

@@ -407,9 +407,8 @@ export default function ProfileSetup() {
               </ol>
             </div>
           </div>
-          <header className="profile-setup-brand" aria-label="KhetiGo profile setup">
-            <span className="profile-setup-brand-mark"><Sprout size={24} strokeWidth={1.7} /></span>
-            <span><strong>KHETIGO</strong><small>SMART FARM CONNECT</small></span>
+          <header className="profile-setup-brand" aria-label="KHETIGO">
+            <img className="brand-emblem" src="/WhatsApp%20Image%202026-11-21%20at%206.52.38%20PM.jpeg" alt="" />
           </header>
           <div className="auth-heading onboarding-heading profile-setup-heading">
             <div className="eyebrow">YOUR KHETIGO PROFILE</div>

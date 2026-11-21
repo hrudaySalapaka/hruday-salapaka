@@ -54,7 +54,7 @@ export default function EquipmentOwnerDashboard(props: { path: string }) {
     { label: 'Total earnings', value: money(earned), note: 'From completed payments', icon: BadgeIndianRupee, tone: 'purple', to: '/equipment-owner/earnings' },
   ]
   return <main className="owner-dashboard">
-    <header className="owner-mobile-brand"><Link to="/home"><span className="owner-brand-mark"><Sprout size={20}/></span><span><b>KHETIGO</b><small>Smart Farm Connect</small></span></Link><Link to="/notifications" aria-label="Notifications"><Bell size={20}/></Link></header>
+    <header className="owner-mobile-brand"><Link to="/home" aria-label="KHETIGO home"><img className="brand-emblem" src="/WhatsApp%20Image%202026-11-21%20at%206.52.38%20PM.jpeg" alt="KHETIGO" /></Link><Link to="/notifications" aria-label="Notifications"><Bell size={20}/></Link></header>
     <div className="owner-location"><MapPin size={15}/><span>{location}</span><span className="location-dot"/></div>
     <section className="owner-welcome"><div><span className="owner-overline">EQUIPMENT OWNER DASHBOARD</span><h1>Good morning, {firstName} <span>✦</span></h1><p>Your equipment is helping farms get more done. Here’s your business at a glance.</p></div><Link className="owner-add-button" to="/equipment-owner/equipment/add"><PackagePlus size={18}/> List equipment</Link></section>
     {error && <div className="owner-error" role="alert">{error}<button onClick={() => void load()}>Retry</button></div>}

@@ -161,3 +161,12 @@
 .fx-equipment-card>div>span.fx-equipment-cta{display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:#176440;font-size:11px;font-weight:750}
 @media(max-width:720px){.fx-categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.fx-categories>a{min-height:95px;padding:8px}.fx-categories>a>b{font-size:10px}}
 @media(max-width:420px){.fx-categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Farmer equipment cards keep an e-commerce grid at every viewport width. */
+.farmer-explore .fx-equipment-grid{display:grid;width:100%;min-width:0;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:clamp(12px,1.8vw,20px);align-items:stretch}
+.farmer-explore .fx-equipment-card{display:flex;min-width:0;flex-direction:column;height:100%;overflow:hidden}
+.farmer-explore .fx-equipment-card>img{display:block;width:100%;height:auto;min-height:0;aspect-ratio:4/3;object-fit:cover;object-position:center}
+.farmer-explore .fx-equipment-card>.fx-equipment-art{width:100%;height:auto;min-height:0;aspect-ratio:4/3;flex:none}
+.farmer-explore .fx-equipment-card>div:not(.fx-equipment-art){display:flex;min-width:0;flex:1;flex-direction:column;align-items:flex-start;padding:clamp(12px,1.4vw,16px)}
+.farmer-explore .fx-equipment-card h3,.farmer-explore .fx-equipment-card p{max-width:100%;overflow-wrap:anywhere}
+.farmer-explore .fx-equipment-card>div>span.fx-equipment-cta{margin-top:auto;padding-top:12px}

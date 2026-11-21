@@ -44,13 +44,13 @@ export const cartChanged = () => window.dispatchEvent(new Event('farmer-rental-c
 export async function getRentals(): Promise<RentalEquipment[]> {
   const client = requireSupabase()
   let data: Record<string, unknown>[] | null = null
-  const fullResult = await client.from('equipment').select(LISTING_FIELDS).eq('is_available', true).eq('listing_status', 'active').order('created_at', { ascending: false }).limit(60)
+  const fullResult = await client.from('equipment').select(LISTING_FIELDS).eq('listing_status', 'active').order('created_at', { ascending: false }).limit(60)
   if (!fullResult.error) data = (fullResult.data ?? []) as unknown as Record<string, unknown>[]
   else {
     // The Farmer catalog should still load if the optional marketplace migration
     // has not reached this Supabase project yet. Keep querying the real equipment
     // table; progressively fall back to the normalized and then legacy columns.
-    const compatibleResult = await client.from('equipment').select(COMPATIBLE_LISTING_FIELDS).eq('is_available', true).order('created_at', { ascending: false }).limit(60)
+    const compatibleResult = await client.from('equipment').select(COMPATIBLE_LISTING_FIELDS).order('created_at', { ascending: false }).limit(60)
     if (!compatibleResult.error) data = (compatibleResult.data ?? []) as unknown as Record<string, unknown>[]
     else {
       const legacyResult = await client.from('equipment').select(LEGACY_LISTING_FIELDS).order('created_at', { ascending: false }).limit(60)

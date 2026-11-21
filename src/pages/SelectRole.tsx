@@ -60,6 +60,7 @@ const roleMessages: Record<UserRole, string> = {
 // This is the only existing video asset in public; keep its real path and use
 // role-specific copy over it rather than inventing six nonexistent video URLs.
 const welcomeVideoSrc = '/WhatsApp%20Video%202026-11-14%20at%207.16.07%20PM.mp4'
+const guestRoleKey = 'khetigo.lastGuestRole'
 
 function saveErrorMessage(reason: unknown): string {
   if (reason && typeof reason === 'object') {
@@ -78,7 +79,12 @@ function saveErrorMessage(reason: unknown): string {
 export default function SelectRole() {
   const { userId, profile, refreshProfile } = useOutletContext<AppContextValue>()
   const navigate = useNavigate()
-  const [selected, setSelected] = useState<PublicUserRole | null>(profile?.role === 'Admin' ? null : profile?.role ?? null)
+  const [selected, setSelected] = useState<PublicUserRole | null>(() => {
+    if (profile?.role === 'Admin') return null
+    if (profile?.role) return profile.role
+    const savedRole = window.localStorage.getItem(guestRoleKey)
+    return USER_ROLES.includes(savedRole as PublicUserRole) ? savedRole as PublicUserRole : null
+  })
   const [welcomeOpen, setWelcomeOpen] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const [videoFailed, setVideoFailed] = useState(false)
@@ -162,12 +168,8 @@ export default function SelectRole() {
     <main className="khetigo-role-page">
       {!welcomeOpen && (
         <div className="khetigo-role-container">
-          <header className="khetigo-brand" aria-label="KHETIGO Smart Farm Connect">
-            <span className="khetigo-logo" aria-hidden="true"><Sprout size={27} strokeWidth={1.7} /></span>
-            <span className="khetigo-brand-text">
-              <strong>KHETIGO</strong>
-              <span>SMART FARM CONNECT</span>
-            </span>
+          <header className="khetigo-brand" aria-label="KHETIGO">
+            <img className="brand-emblem" src="/WhatsApp%20Image%202026-11-21%20at%206.52.38%20PM.jpeg" alt="" />
           </header>
 
           <section className="khetigo-heading" aria-labelledby="role-heading">
