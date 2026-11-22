@@ -17,8 +17,8 @@ Deno.serve(async (request) => {
   const url = Deno.env.get('SUPABASE_URL')
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-  const configuredAdminEmail = Deno.env.get('ADMIN_EMAIL')?.trim().toLowerCase()
-  if (!url || !anonKey || !serviceKey || !configuredAdminEmail || !/^\S+@\S+\.\S+$/.test(configuredAdminEmail)) {
+  const configuredAdminEmail = 'hruday.salapaka10@gmail.com'
+  if (!url || !anonKey || !serviceKey) {
     return response({ error: 'Admin provisioning is not configured on the server.' }, 503)
   }
 

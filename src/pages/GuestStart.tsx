@@ -207,6 +207,14 @@ const GuestStart: React.FC<GuestStartProps> = ({ onGetStarted, checkingSession =
         @media (prefers-reduced-motion: reduce) { .role-options { scroll-behavior: auto; } }
       `}</style>
 
+      <style>{`
+        .role-card[aria-pressed="true"] .role-art img {
+          filter: drop-shadow(0 0 4px rgba(255, 207, 54, .98))
+            drop-shadow(0 0 10px rgba(255, 183, 0, .72))
+            drop-shadow(0 0 20px rgba(255, 193, 7, .42));
+        }
+      `}</style>
+
       <video ref={videoRef} className="guest-bg-video" autoPlay controls loop playsInline muted={videoMuted} preload="auto" onError={() => setVideoError(true)} onCanPlay={() => { if (videoRef.current) videoRef.current.volume = 0.2; setVideoError(false) }}>
         <source src="/WhatsApp Video 2026-11-21 at 2.37.17 PM.mp4" type="video/mp4" />
       </video>

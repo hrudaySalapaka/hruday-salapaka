@@ -16,6 +16,7 @@ import { profileService } from './services/profileService'
 import { isSupabaseConfigured } from './lib/supabase'
 import type { AppContextValue, UserProfile, UserRole } from './types/user'
 import { requireSupabase } from './lib/supabase'
+import { hasDesignatedAdminAccess } from './lib/adminAccess'
 import type { WorkspaceProps } from './features/WorkspacePage'
 import FarmerDashboard from './features/farmer/Dashboard'
 import CustomerDashboard from './features/customer/Dashboard'
@@ -90,7 +91,8 @@ function PlainPage({ title, children, className }: { title: string; children: Re
 
 function authenticatedDestination(profile: UserProfile | null): string {
   if (!profile?.role) return '/select-role'
-  if (profile.role === 'Admin' || profile.profile_complete) return '/home'
+  if (profile.role === 'Admin') return hasDesignatedAdminAccess(profile) ? '/admin/rental-payments' : '/'
+  if (profile.profile_complete) return '/home'
   return '/profile-setup'
 }
 

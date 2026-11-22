@@ -2,7 +2,9 @@ import { useState, type FormEvent } from 'react'
 import { Eye, EyeOff, Sprout } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { authService } from '../services/authService'
+import { profileService } from '../services/profileService'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { isDesignatedAdminEmail } from '../lib/adminAccess'
 import '../assets/auth.css'
 
 export default function Login() {
@@ -29,8 +31,36 @@ export default function Login() {
     setLoading(true)
 
     try {
-      await authService.signIn(normalizedEmail, password, remember)
-      navigate('/home', { replace: true })
+      const user = await authService.signIn(normalizedEmail, password, remember)
+      const isDesignatedAdmin = isDesignatedAdminEmail(user.email)
+      if (isDesignatedAdmin) {
+        try {
+          await authService.syncAdminRole()
+        } catch (reason) {
+          console.error('[Login] Could not synchronize designated Admin role:', reason)
+        }
+      }
+
+      let assignedRole: string | null = null
+      try {
+        const profile = await profileService.getProfile(user.id)
+        assignedRole = profile?.role ?? null
+      } catch (reason) {
+        console.error('[Login] Could not read the Supabase profile role:', reason)
+      }
+
+      const hasAdminRole = assignedRole === 'Admin'
+      console.info('[Login] Supabase profile role:', assignedRole)
+      console.info('[Login] Admin redirect check:', { isDesignatedAdmin, hasAdminRole })
+      if (isDesignatedAdmin && !hasAdminRole) {
+        console.warn('[Login] Admin redirect skipped because the Supabase profile role is not exactly "Admin".', assignedRole)
+      }
+      const destination = isDesignatedAdmin && hasAdminRole
+        ? '/admin/rental-payments'
+        : hasAdminRole
+          ? '/'
+          : '/home'
+      navigate(destination, { replace: true })
     } catch (reason) {
       setError(
         reason instanceof Error

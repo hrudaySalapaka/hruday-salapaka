@@ -4,10 +4,11 @@ import type { CSSProperties, KeyboardEvent, MouseEvent } from 'react'
 import { Link, useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { AppContextValue } from '../../../types/user'
 import { addToCart, getRentals, money, rentalDiscountPercent, rentalRate, type RentalEquipment } from '../services/rentalMarketplace'
-import './ExploreHome.css'
 import '../styles/RentalMarketplace.css'
+import './ExploreHome.css'
 
 const categories = ['All equipment', 'Tractors', 'Harvesters', 'Tillage', 'Planting', 'Irrigation', 'Spraying', 'Transport']
+const categoryPatterns: Record<string, RegExp> = { Tractors: /tractor|power tiller/, Harvesters: /harvest|combine|thresher/, Tillage: /rotavator|cultivator|plough|plow|tiller|harrow/, Planting: /seed|planter|transplanter/, Irrigation: /irrigat|pump|sprinkler/, Spraying: /spray|sprayer|duster/, Transport: /trailer|cart|tractor trolley|transport/ }
 const banners = [
   { tag: 'BOOK BY THE HOUR OR DAY', title: 'The right machine for every season.', body: 'Compare local farm equipment, see clear rental prices and reserve when the work calls.', color: 'green', icon: Tractor },
   { tag: 'GROW MORE. WAIT LESS.', title: 'Harvest on your schedule.', body: 'Find harvesters and tractors from owners serving your area.', color: 'gold', icon: Sprout },
@@ -15,9 +16,13 @@ const banners = [
 ]
 function matchesCategory(item: RentalEquipment, category: string) {
   if (category === 'All equipment') return true
+  if (category === 'Other equipment') return equipmentCategory(item) === category
   const text = `${item.equipment_type} ${item.name}`.toLowerCase()
-  const patterns: Record<string, RegExp> = { Tractors: /tractor|power tiller/, Harvesters: /harvest|combine|thresher/, Tillage: /rotavator|cultivator|plough|plow|tiller|harrow/, Planting: /seed|planter|transplanter/, Irrigation: /irrigat|pump|sprinkler/, Spraying: /spray|sprayer|duster/, Transport: /trailer|cart|tractor trolley|transport/ }
-  return patterns[category]?.test(text) ?? false
+  return categoryPatterns[category]?.test(text) ?? false
+}
+function equipmentCategory(item: RentalEquipment) {
+  const text = `${item.equipment_type} ${item.name}`.toLowerCase()
+  return categories.slice(1).find((category) => categoryPatterns[category].test(text)) ?? 'Other equipment'
 }
 function ListingCard({ item, userId, onBook, onDetails, onCart, onCartError }: { item: RentalEquipment; userId: string; onBook: (item: RentalEquipment) => void; onDetails: (item: RentalEquipment) => void; onCart: (item: RentalEquipment) => void; onCartError: (message: string) => void }) {
   const [saved, setSaved] = useState(false)
@@ -54,7 +59,15 @@ export default function ExploreHome() {
   useEffect(() => { setQuery(params.get('q') || '') }, [params])
   useEffect(() => { let active = true; void getRentals().then((rows) => { if (active) { setListings(rows); setError('') } }).catch((reason: unknown) => { if (active) { const detail = reason instanceof Error ? reason.message : typeof reason === 'string' ? reason : reason && typeof reason === 'object' && 'message' in reason ? String(reason.message) : JSON.stringify(reason); setError(detail && detail !== '{}' ? `Could not load equipment listings: ${detail}` : 'Could not load equipment listings. Check your Supabase connection and listing access.') } }).finally(() => { if (active) setLoading(false) }); return () => { active = false } }, [userId])
   useEffect(() => { const timer = window.setInterval(() => setBanner((current) => (current + 1) % banners.length), 7000); return () => window.clearInterval(timer) }, [])
-  const filtered = useMemo(() => listings.filter((item) => matchesCategory(item, category) && (!query.trim() || `${item.name} ${item.equipment_type} ${item.description ?? ''} ${item.brand ?? ''} ${item.model ?? ''} ${item.location ?? ''}`.toLowerCase().includes(query.toLowerCase()))), [category, listings, query])
+  const uniqueListings = useMemo(() => [...new Map(listings.map((item) => [item.id, item])).values()], [listings])
+  const categoryArrays = useMemo(() => {
+    const grouped: Record<string, RentalEquipment[]> = Object.fromEntries([...categories.slice(1), 'Other equipment'].map((label) => [label, []]))
+    uniqueListings.forEach((item) => grouped[equipmentCategory(item)].push(item))
+    return grouped
+  }, [uniqueListings])
+  const matchesSearch = (item: RentalEquipment) => !query.trim() || `${item.name} ${item.equipment_type} ${item.description ?? ''} ${item.brand ?? ''} ${item.model ?? ''} ${item.location ?? ''}`.toLowerCase().includes(query.toLowerCase())
+  const filtered = useMemo(() => uniqueListings.filter((item) => matchesCategory(item, category) && matchesSearch(item)), [category, uniqueListings, query])
+  const showCategoryShelves = category === 'All equipment' && !query.trim()
   const promo = banners[banner], PromoIcon = promo.icon
   return <main className="farmer-explore rental-marketplace" style={{ '--fx-accent': '#126b43', '--fx-deep': '#0b3d2c', '--fx-canvas': '#f4f7f2' } as CSSProperties}>
     <div className="fx-content rental-content">
@@ -63,7 +76,7 @@ export default function ExploreHome() {
       <section className="rental-category-section"><div className="rental-section-heading"><div><span className="fx-kicker">FIND THE RIGHT MACHINE</span><h2>Equipment categories</h2></div></div><div className="rental-category-pills" role="group" aria-label="Filter equipment category">{categories.map((label) => <button key={label} type="button" className={category === label ? 'selected' : ''} onClick={() => setCategory(label)}>{label === 'All equipment' && <Tractor size={15} />}{label}</button>)}</div></section>
       <div className="rental-list-heading" id="rental-listings"><div><span className="fx-kicker">EQUIPMENT FOR YOUR FARM</span><h2>{category === 'All equipment' ? 'Available for rent' : category}</h2><p>{profile?.village ? `Equipment near ${profile.village}` : 'Compare equipment listed by local owners'}</p></div><label className="rental-inline-search"><Search size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search equipment" aria-label="Filter equipment" /></label></div>
       {notice && <div className="rental-notice" role="status">{notice}<button onClick={() => setNotice('')} aria-label="Dismiss">×</button></div>}{error && <div className="fx-error" role="alert">{error}</div>}
-      {loading ? <div className="rental-loading"><span className="spinner" /> Loading available equipment…</div> : filtered.length ? <div className="rental-grid">{filtered.map((item) => <ListingCard key={item.id} item={item} userId={userId} onDetails={(selected) => navigate(`/farmer/equipment/${selected.id}`)} onBook={(selected) => navigate(`/farmer/checkout?equipment=${encodeURIComponent(selected.id)}`)} onCart={(selected) => setNotice(`${selected.name} added to your rental cart.`)} onCartError={setNotice} />)}</div> : <div className="rental-empty"><Tractor size={32} /><h3>{query || category !== 'All equipment' ? 'No matching equipment' : 'No available listings yet'}</h3><p>Try another category or search term. New active listings from equipment owners appear here.</p></div>}
+      {loading ? <div className="rental-loading"><span className="spinner" /> Loading available equipment…</div> : showCategoryShelves ? <div className="rental-category-shelves">{Object.entries(categoryArrays).filter(([, items]) => items.length > 0).map(([label, items]) => <section className="rental-category-shelf" key={label}><div className="rental-shelf-heading"><h3>{label}</h3><button type="button" onClick={() => setCategory(label)}>See all <ChevronRight size={15} /></button></div><div className="rental-grid">{items.slice(0, 4).map((item) => <ListingCard key={item.id} item={item} userId={userId} onDetails={(selected) => navigate(`/farmer/equipment/${selected.id}`)} onBook={(selected) => navigate(`/farmer/checkout?equipment=${encodeURIComponent(selected.id)}`)} onCart={(selected) => setNotice(`${selected.name} added to your rental cart.`)} onCartError={setNotice} />)}</div></section>)}{uniqueListings.length === 0 && <div className="rental-empty"><Tractor size={32} /><h3>No available listings yet</h3><p>New active listings from equipment owners appear here.</p></div>}</div> : filtered.length ? <div className="rental-grid">{filtered.map((item) => <ListingCard key={item.id} item={item} userId={userId} onDetails={(selected) => navigate(`/farmer/equipment/${selected.id}`)} onBook={(selected) => navigate(`/farmer/checkout?equipment=${encodeURIComponent(selected.id)}`)} onCart={(selected) => setNotice(`${selected.name} added to your rental cart.`)} onCartError={setNotice} />)}</div> : <div className="rental-empty"><Tractor size={32} /><h3>{query || category !== 'All equipment' ? 'No matching equipment' : 'No available listings yet'}</h3><p>Try another category or search term. New active listings from equipment owners appear here.</p></div>}
       <footer className="rental-trust-footer"><Link to="/farmer/bookings">My rentals</Link><Link to="/farmer/farms">My farm</Link><span>Equipment rentals made for local farming</span></footer>
     </div>
   </main>

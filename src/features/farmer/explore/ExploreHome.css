@@ -162,6 +162,37 @@
 @media(max-width:720px){.fx-categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.fx-categories>a{min-height:95px;padding:8px}.fx-categories>a>b{font-size:10px}}
 @media(max-width:420px){.fx-categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* Flipkart inspired equipment home: a large hero followed by category shelves. */
+.farmer-explore.rental-marketplace{background:#f1f3f6}
+.farmer-explore .rental-content{padding-top:18px}
+.farmer-explore .rental-promo{min-height:300px;padding:clamp(28px,5vw,56px);border-radius:8px;box-shadow:0 5px 18px #18332916}
+.farmer-explore .rental-promo-copy{max-width:560px}
+.farmer-explore .rental-promo-copy>span{font-size:11px;letter-spacing:.16em}
+.farmer-explore .rental-promo-copy h1{max-width:560px;font-size:clamp(34px,5vw,54px);line-height:1.04}
+.farmer-explore .rental-promo-copy p{max-width:440px;font-size:14px;line-height:1.6}
+.farmer-explore .rental-promo-art{right:8%;width:320px;height:260px}
+.farmer-explore .rental-promo-art svg{width:190px;height:190px}
+.farmer-explore .rental-promo-controls{bottom:18px;left:50%;right:auto;transform:translateX(-50%);padding:7px 10px;border-radius:999px;background:#ffffff35;backdrop-filter:blur(8px)}
+.farmer-explore .rental-category-shelves{display:grid;gap:22px}
+.farmer-explore .rental-category-shelf{padding:17px;border:1px solid #e7e9ed;border-radius:8px;background:#fff;box-shadow:0 2px 7px #1424380a}
+.farmer-explore .rental-shelf-heading{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #edf0f2}
+.farmer-explore .rental-shelf-heading h3{font-size:19px}
+.farmer-explore .rental-shelf-heading button{background:var(--fx-accent);color:#fff}
+.farmer-explore .rental-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:10px;grid-auto-rows:auto;align-items:stretch}
+.farmer-explore .rental-card{height:100%;border-radius:7px;box-shadow:0 2px 8px #1424380c}
+.farmer-explore .rental-card-cover{aspect-ratio:5/4}
+.farmer-explore .rental-card-info{padding:10px}
+.farmer-explore .rental-card-info h2{font-size:14px}
+.farmer-explore .rental-owner{margin-top:8px}
+.farmer-explore .rental-price-pair{gap:6px;margin-top:8px}
+.farmer-explore .rental-price-pair>div{padding:6px 7px}
+.farmer-explore .rental-price-pair strong{font-size:12px}
+.farmer-explore .rental-card-actions{gap:6px;margin-top:9px}
+.farmer-explore .rental-card-actions button{min-height:33px;padding:0 7px;font-size:9px}
+.farmer-explore .rental-card:hover{box-shadow:0 8px 20px #1424381a}
+@media(max-width:700px){.farmer-explore .rental-content{padding-top:12px}.farmer-explore .rental-promo{min-height:250px;padding:25px 22px;border-radius:8px}.farmer-explore .rental-promo-copy{width:72%}.farmer-explore .rental-promo-copy h1{font-size:clamp(28px,7vw,38px)}.farmer-explore .rental-promo-copy p{font-size:11px}.farmer-explore .rental-promo-art{right:-8%;width:180px;height:180px}.farmer-explore .rental-promo-art svg{width:100px;height:100px}.farmer-explore .rental-category-shelf{padding:12px}.farmer-explore .rental-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+@media(max-width:430px){.farmer-explore .rental-card{display:flex;flex-direction:column}.farmer-explore .rental-card-cover{height:auto;min-height:0;aspect-ratio:5/4}.farmer-explore .rental-card-fallback{min-height:0}.farmer-explore .rental-card-info{padding:8px}.farmer-explore .rental-card-info h2{font-size:12px;white-space:normal}.farmer-explore .rental-price-pair{grid-template-columns:1fr;gap:4px}.farmer-explore .rental-price-pair>div{grid-template-columns:1fr auto;padding:6px}.farmer-explore .rental-price-pair>div>span{grid-column:auto}.farmer-explore .rental-card-actions{flex-direction:column}.farmer-explore .rental-card-actions button{min-height:31px;padding-inline:5px;font-size:8px}}
+
 /* Farmer equipment cards keep an e-commerce grid at every viewport width. */
 .farmer-explore .fx-equipment-grid{display:grid;width:100%;min-width:0;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:clamp(12px,1.8vw,20px);align-items:stretch}
 .farmer-explore .fx-equipment-card{display:flex;min-width:0;flex-direction:column;height:100%;overflow:hidden}
